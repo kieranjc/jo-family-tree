@@ -508,7 +508,21 @@ function closePanel() {
 }
 document.getElementById('panelClose').addEventListener('click', closePanel);
 scrim.addEventListener('click', closePanel);
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePanel(); });
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape') return;
+  if (panel.classList.contains('show')) {
+    closePanel();
+    return;
+  }
+  if (topbarEl?.classList.contains('search-open')) {
+    collapseMobileSearch();
+    return;
+  }
+  if (topbarEl?.classList.contains('persona-open')) {
+    collapseMobilePersona();
+    return;
+  }
+});
 
 // Delegate clicks for cards & chips
 function attachCardClicks(root) {
@@ -697,6 +711,61 @@ function renderMCard(id) {
    ============================================================ */
 const searchInput = document.getElementById('searchInput');
 const searchCount = document.getElementById('searchCount');
+const searchToggle = document.getElementById('searchToggle');
+const personaToggle = document.getElementById('personaToggle');
+const personaSelect = document.getElementById('personaSelect');
+const topbarEl = document.querySelector('.topbar');
+
+function collapseMobileSearch() {
+  if (!topbarEl) return;
+  topbarEl.classList.remove('search-open');
+  searchToggle?.setAttribute('aria-expanded', 'false');
+  searchToggle?.setAttribute('aria-label', 'Open search');
+}
+
+function collapseMobilePersona() {
+  if (!topbarEl) return;
+  topbarEl.classList.remove('persona-open');
+  personaToggle?.setAttribute('aria-expanded', 'false');
+  personaToggle?.setAttribute('aria-label', 'Choose viewer');
+}
+
+function setupMobileToolbarToggles() {
+  if (!topbarEl) return;
+
+  if (searchToggle && searchInput) {
+    searchToggle.addEventListener('click', () => {
+      if (window.innerWidth > 800) return;
+      const open = !topbarEl.classList.contains('search-open');
+      if (open) collapseMobilePersona();
+      topbarEl.classList.toggle('search-open', open);
+      searchToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      searchToggle.setAttribute('aria-label', open ? 'Close search' : 'Open search');
+      if (open) searchInput.focus();
+      else searchInput.blur();
+    });
+  }
+
+  if (personaToggle && personaSelect) {
+    personaToggle.addEventListener('click', () => {
+      if (window.innerWidth > 800) return;
+      const open = !topbarEl.classList.contains('persona-open');
+      if (open) collapseMobileSearch();
+      topbarEl.classList.toggle('persona-open', open);
+      personaToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      personaToggle.setAttribute('aria-label', open ? 'Close viewer menu' : 'Choose viewer');
+      if (open) setTimeout(() => personaSelect.focus(), 0);
+      else personaSelect.blur();
+    });
+  }
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 800) {
+      collapseMobileSearch();
+      collapseMobilePersona();
+    }
+  });
+}
 let searchTimer = null;
 searchInput.addEventListener('input', () => {
   clearTimeout(searchTimer);
@@ -765,6 +834,7 @@ function runSearch() {
    ============================================================ */
 function init() {
   setupPersonaPicker();
+  setupMobileToolbarToggles();
   renderDesktop();
   renderMobile();
   attachCardClicks(canvas);

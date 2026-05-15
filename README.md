@@ -30,17 +30,51 @@ npm test
 
 ## Deploy (Cloudflare Pages)
 
-1. Push this repo to GitHub.
-2. In [Cloudflare Dashboard](https://dash.cloudflare.com/) → **Workers & Pages** → **Create** → **Connect to Git**.
-3. Build settings:
-   - **Build command:** `npm run build`
-   - **Build output directory:** `dist`
-   - **Node version:** 20
-4. Add a custom domain under the Pages project when ready.
+### One-time setup (dashboard)
 
-SPA routing uses `public/_redirects` (`/* → /index.html`).
+1. Push this repo to GitHub (if it is not already).
+2. Log in to [Cloudflare Dashboard](https://dash.cloudflare.com/) → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**.
+3. Select the `jo-family-tree` repository and pick the production branch (usually **`main`**).
 
-Preview deployments are created automatically for branches and pull requests.
+**Build configuration**
+
+| Setting | Value |
+|--------|--------|
+| **Framework preset** | Vite (or *None* — both work) |
+| **Root directory** | `/` (repo root) |
+| **Build command** | `npm run build` |
+| **Build output directory** | `dist` |
+
+**Environment variables** (Pages → your project → **Settings** → **Environment variables** → **Production** and **Preview**):
+
+| Variable name | Value |
+|---------------|--------|
+| `NODE_VERSION` | `20` |
+
+Cloudflare runs `npm install` before your build command (this repo includes `package-lock.json` for reproducible installs).
+
+4. Save and deploy. The first build produces a `*.pages.dev` URL.
+5. Optional: **Custom domains** → attach your domain and follow DNS instructions (often CNAME to `your-project.pages.dev`).
+
+### SPA routing
+
+[`public/_redirects`](public/_redirects) is copied into `dist/` so all routes fall back to `index.html` (single-page app).
+
+### Preview deployments
+
+Every branch and pull request gets its own preview URL automatically once Git integration is enabled.
+
+### Deploy from your machine (CLI, optional)
+
+Requires [Wrangler](https://developers.cloudflare.com/workers/wrangler/) logged in (`npx wrangler login`).
+
+```bash
+npm ci
+npm run build
+npx wrangler pages deploy dist --project-name=YOUR_PROJECT_SLUG
+```
+
+Create the Pages project in the dashboard first (empty project), or pass a new name if your account allows project creation via CLI. Prefer Git-connected builds for ongoing deploys.
 
 ## Personas
 

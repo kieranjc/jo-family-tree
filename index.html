@@ -11,12 +11,22 @@
 <body>
 <header class="app">
   <div class="topbar">
-    <div class="brand">
-      <span class="eyebrow">Family Tree · Five Generations</span>
-      <h1>Daly</h1>
-      <p class="persona-subtitle" id="personaSubtitle" hidden></p>
+    <div class="topbar-leading">
+      <div class="brand">
+        <span class="eyebrow">Family Tree · Five Generations</span>
+        <h1>Daly</h1>
+        <p class="persona-subtitle" id="personaSubtitle" hidden></p>
+      </div>
+      <div class="topbar-actions">
+        <button type="button" class="persona-toggle" id="personaToggle" aria-expanded="false" aria-controls="personaWrap" aria-haspopup="listbox" aria-label="Choose viewer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M5 20v-1a7 7 0 0114 0v1"/></svg>
+        </button>
+        <button type="button" class="search-toggle" id="searchToggle" aria-expanded="false" aria-controls="searchInput" aria-label="Open search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        </button>
+      </div>
     </div>
-    <div class="persona-wrap">
+    <div class="persona-wrap" id="personaWrap">
       <label class="persona-label" for="personaSelect">View as</label>
       <select id="personaSelect" class="persona-select" aria-label="Choose whose perspective to view the tree"></select>
     </div>
