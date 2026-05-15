@@ -48,6 +48,8 @@ npm test
 
 If your Cloudflare project only asks for a build command and output directory (Git-connected Pages), you can leave **Deploy command** empty—Cloudflare publishes `dist/` automatically after a successful build. Use **`npx wrangler deploy`** when the dashboard requires an explicit Wrangler upload step after the build finishes (ensure Wrangler is authenticated, e.g. `npx wrangler login`, or use a suitable CI token).
 
+This repo includes **`wrangler.jsonc`** so **`npx wrangler deploy`** runs **non-interactively** in CI (assets from `./dist`, SPA fallback). **`vite.config.js`** declares an empty **`plugins`** array so Wrangler does not fail when it adjusts the Vite config.
+
 **Environment variables** (Pages → your project → **Settings** → **Environment variables** → **Production** and **Preview**):
 
 | Variable name | Value |
@@ -96,6 +98,8 @@ Create the Pages project in the dashboard first (empty project), or pass a new n
 
 | Path | Purpose |
 |------|---------|
+| `vite.config.js` | Vite build config (`base`, `dist`) |
+| `wrangler.jsonc` | Wrangler Workers static assets (`dist/`, SPA routing) |
 | `index.html` | App shell |
 | `src/main.js` | UI and tree rendering |
 | `src/data/tree.js` | Genealogy data |
