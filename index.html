@@ -518,6 +518,46 @@
     border-radius: 0 6px 6px 0;
     font-size: 14.5px;
   }
+  .field.bio .val.bio-body {
+    font-size: 14px;
+    line-height: 1.55;
+    color: #3a342c;
+  }
+  .field.bio .val.bio-body p {
+    margin: 0 0 12px;
+    text-wrap: pretty;
+  }
+  .field.bio .val.bio-body p:last-child { margin-bottom: 0; }
+  .field.bio .val.bio-body strong {
+    font-weight: 400;
+    color: var(--ink);
+    box-shadow: inset 0 -0.4em 0 var(--accent-bg);
+    padding: 0 1px;
+  }
+  .field.bio .val.bio-body em {
+    color: var(--ink-soft);
+  }
+
+  /* Tiny "has bio" dot on the card */
+  .card.has-bio .name::after {
+    content: "";
+    display: inline-block;
+    width: 5px; height: 5px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin-left: 6px;
+    vertical-align: 2px;
+    opacity: 0.85;
+  }
+  .mcard.has-bio .name::after {
+    content: "";
+    display: inline-block;
+    width: 5px; height: 5px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin-left: 6px;
+    vertical-align: 2px;
+  }
   .lifespan {
     display: inline-flex; align-items: baseline; gap: 8px;
     font-family: ui-monospace, monospace;
@@ -782,6 +822,45 @@ const LINES = {
   kieran:  { label: 'Cummins',            cssClass: 'line-kieran' },
 };
 
+// Biographical notes (extracted from Daly History research document)
+const BIOS = {
+  gp_michael_daly: [
+    "Michael was born in Cork to Patrick Daly, a general labourer, and Mary Barry. The family lived at House 17, Walshes Avenue, Blackpool — a modest 3-room, 2nd Class dwelling on a terrace-lined lane off Thomas Davis Street. By 1926 the family had moved to Ballyvolane, where Michael worked as a labourer at <strong>Gouldings Fertilizers</strong>, Ireland's largest chemical fertilizer manufacturer at the time. The work was physically brutal — producing superphosphates and sulphuric acid in conditions where workers wore handkerchiefs over their faces to block toxic fumes, for wages of roughly 20–25 shillings a week.",
+    "On <strong>4 September 1919</strong>, aged 18, Michael enlisted in the <strong>2nd Battalion, Royal Irish Regiment (British Army)</strong>. His service was cut short when the regiment was disbanded on 31 July 1922 following the Anglo-Irish Treaty. He received an honourable discharge under code <em>SNLR Para 3Q2</em> (Services No Longer Required — Disbandment), with a character rating of <em>Very Good</em>.",
+    "He married <strong>Mary Curran</strong> on <strong>17 September 1941</strong>, during \"The Emergency\" (Ireland's WWII neutrality period). The couple moved to <strong>109 Knockpogue Avenue, Farranree</strong> — a modern terraced house designed by Cork City Architect Eamon O'Byrne in 1956 as part of a major social housing expansion. After years in cramped cottages in Blackpool and Ballyvolane, having indoor plumbing, a separate kitchen, and a private garden was transformative. Michael lived at Knockpogue Avenue until his death in 1957. He was buried in <strong>Rathcooney Cemetery</strong>."
+  ],
+  gp_mary_curran: [
+    "Mary was born in Cork to William Curran, a dock labourer at Suttons Coal Merchants, and Thomasine McCarthy. In 1926 the family lived at <strong>2 Shandon View Cottages</strong>, a terrace of artisan dwellings just off Watercourse Road in Blackpool, with panoramic views of the iconic Shandon Bells. The cottage was a 3-room, 2nd Class dwelling — slightly less cramped than many neighbouring families' homes.",
+    "As a young woman in her teens and twenties during the 1930s, Mary almost certainly worked at the <strong>Sunbeam Wolsey factory</strong> — the largest employer in the Blackpool/Watercourse Road area — as a hosiery or textile operative. When she married Michael Daly in 1941, she would have had to leave her permanent role under the <em>Marriage Bar</em>, which required women to resign from factory or civil service positions upon marriage.",
+    "After Michael's death in 1957, Mary remained at <strong>109 Knockpogue Avenue</strong> for over 30 years, becoming a central figure in the family and the Farranree community. She died on <strong>6 March 1990</strong>, aged 76, and was buried in <strong>Rathcooney Cemetery</strong> in the family plot.",
+    "<em>A photograph of Mary survives from her Sunbeam factory years.</em>"
+  ],
+  gunc_matthew_daly: [
+    "Matthew was five years older than his brother Michael and may well have been the one who inspired Michael to enlist. He grew up alongside Michael at Walshes Avenue, Blackpool, and is recorded in the 1911 Census as a 14-year-old scholar in the Daly household.",
+    "At the height of the Great War recruitment drive, Matthew enlisted in the <strong>Royal Marine Light Infantry (RMLI)</strong> on <strong>1 December 1914</strong>, aged 18. As a recruit from Cork, he was assigned to the <strong>Plymouth Division</strong> and trained at the RMLI Depot in Deal, Kent. He was later drafted into the <strong>Royal Marine Brigade</strong> (part of the 63rd Royal Naval Division), serving as infantry rather than aboard ships — a common deployment for Royal Marines in WWI.",
+    "His service record, held at <strong>The National Archives, Kew</strong> (reference ADM 159/161/17749), shows a character of <em>V. Good</em>, ability <em>Satisfactory</em>, and discharge in April 1920 — medically invalided, then transferred to the Royal Fleet Reserve (Class B).",
+    "For a Cork man serving in the British military during the War of Independence, maintaining a \"Very Good\" character rating was a mark of steady, disciplined temperament."
+  ],
+  gp_nora_barrett: [
+    "Nora was born in Cork to <strong>George Barrett</strong>, a sawyer at E.H. Harte Sawmills, and <strong>Margaret Scott</strong>. In 1926 the family lived at <strong>62 Kearney's Lane</strong>, just off Blarney Street near the North Cathedral — a classic narrow Cork lane of artisan cottages. The Barrett family occupied just 2 rooms, typical of these \"one-up, one-down\" terrace homes with no internal plumbing.",
+    "Her father George worked at <strong>E.H. Harte &amp; Sons Ltd</strong>, a major timber yard at Wandesford Quay (near Clarke's Bridge), processing raw timber imported from Canada and the Baltic. It was a physically demanding job earning roughly 25–35 shillings per week — a precarious living wage in 1920s Cork.",
+    "Nora married <strong>James Byron</strong> on <strong>17 March 1944</strong> (St. Patrick's Day). The couple settled at <strong>106 Connolly Road, Ballyphehane</strong> — one of the foundational streets of Cork Corporation's post-war social housing scheme, built from 1948 onwards to rehouse families from overcrowded city-centre tenements. The road was named in honour of James Connolly, executed leader of the 1916 Rising.",
+    "Nora died on <strong>14 February 1974</strong>, aged 49."
+  ],
+  gp_james_byron: [
+    "James was born in <strong>Prescot, Lancashire</strong> to <strong>Frederick Byron</strong> (a general labourer at B.I. &amp; H. Cables, originally from St Helens, Lancs) and <strong>Florence Ritchie</strong> (from Prescot). In 1921 the family was recorded at <strong>49 South Avenue, Prescot</strong> — a newly built residential street of brick-built Edwardian terraced homes.",
+    "The family's move to Ireland is not precisely dated, but James grew up in Cork and married <strong>Nora Barrett</strong> on 17 March 1944. The couple settled in Ballyphehane. James died in 1963, aged around 47.",
+    "James's Lancashire origins give the Daly family its notable English connection — his father Frederick was from St Helens, and his mother Florence from Prescot itself, making James the first in his direct line to grow up in Ireland."
+  ],
+  ggp_frederick_byron: [
+    "Frederick was born in St Helens, Lancashire and worked as a <strong>general labourer at B.I. &amp; H. Cables</strong> — a major cable manufacturing company. By 1921 he was living at 49 South Avenue, Prescot with his wife Florence and five-year-old son James. He is the origin of the English/Lancashire strand in Joanne's family tree."
+  ],
+  ggp_george_barrett: [
+    "George worked as a sawyer and labourer at <strong>E.H. Harte &amp; Sons Ltd</strong>, a timber yard at Wandesford Quay, Cork. He lived with his wife Margaret (née Scott) and their children at <strong>62 Kearney's Lane</strong>, Blackpool, Cork. The family are recorded in the 1926 Census with eight people in two rooms.",
+    "George's work involved processing raw timber imported from Canada and the Baltic into finished lumber for Cork's construction trade."
+  ],
+};
+
 // gen 0 = Joanne's gen, gen 1 = parents, ... gen 4 = 2x great-grandparents
 const PEOPLE = [
   // -- Gen 0: Joanne, Kieran, siblings
@@ -810,19 +889,21 @@ const PEOPLE = [
   { id: 'aunt_carmel',  name: 'Carmel Byron',  line: 'byron', gen: 1, role: 'aunt',  relation: "Joanne's maternal aunt — Joan Byron's sister.", parentOf: 'joan_byron' },
 
   // -- Gen 2: Grandparents
-  { id: 'gp_michael_daly',  name: 'Michael Daly',  dob: '1901', dod: '1957', line: 'daly',    gen: 2, role: 'grandparent', relation: "Joanne's paternal grandfather." },
-  { id: 'gp_mary_curran',   name: 'Mary Curran',   dob: '1913', dod: '1990', line: 'curran',  gen: 2, role: 'grandparent', relation: "Joanne's paternal grandmother." },
-  { id: 'gp_james_byron',   name: 'James Byron',   dob: '1916', birthplace: 'Prescot, Lancashire', dod: '1963', line: 'byron',   gen: 2, role: 'grandparent', relation: "Joanne's maternal grandfather." },
-  { id: 'gp_nora_barrett',  name: 'Nora Barrett',  dob: '1924', dod: '1974', line: 'barrett', gen: 2, role: 'grandparent', relation: "Joanne's maternal grandmother." },
+  { id: 'gp_michael_daly',  name: 'Michael Daly',  dob: '2 May 1901', birthplace: 'Cork, Ireland', dod: '1957, Cork', line: 'daly',    gen: 2, role: 'grandparent', relation: "Joanne's paternal grandfather." },
+  { id: 'gp_mary_curran',   name: 'Mary Curran',   dob: '28 Nov 1913', birthplace: 'Cork, Ireland', dod: '6 Mar 1990, Cork', line: 'curran',  gen: 2, role: 'grandparent', relation: "Joanne's paternal grandmother." },
+  { id: 'gp_james_byron',   name: 'James Byron',   dob: 'Jun 1916', birthplace: 'Prescot, Lancashire, England', dod: '1963, Cork', line: 'byron',   gen: 2, role: 'grandparent', relation: "Joanne's maternal grandfather." },
+  { id: 'gp_nora_barrett',  name: 'Nora Barrett',  dob: '10 Jun 1924', birthplace: 'Cork, Ireland', dod: '14 Feb 1974, Cork', line: 'barrett', gen: 2, role: 'grandparent', relation: "Joanne's maternal grandmother." },
+  // Great-uncle on the Daly side (Michael's elder brother)
+  { id: 'gunc_matthew_daly',name: 'Matthew Daly', dob: '9 Jun 1896', birthplace: 'Cork, Ireland', dod: 'after 1920', line: 'daly', gen: 2, role: 'great-uncle', relation: "Joanne's great-uncle — Michael Daly's elder brother.", parentOf: 'gp_michael_daly' },
 
   // -- Gen 3: Great-grandparents
   { id: 'ggp_patrick_daly',     name: 'Patrick Daly',         dob: '1865', line: 'daly',    gen: 3, role: 'great-grandparent', relation: "Joanne's paternal great-grandfather (Daly line)." },
   { id: 'ggp_mary_barry',       name: 'Mary Barry',           dob: '1876', line: 'daly',    gen: 3, role: 'great-grandparent', relation: "Joanne's paternal great-grandmother (Daly line)." },
   { id: 'ggp_william_curran',   name: 'William Curran',       dob: '1884', line: 'curran',  gen: 3, role: 'great-grandparent', relation: "Joanne's paternal great-grandfather (Curran line)." },
   { id: 'ggp_thomasine_mcc',    name: 'Thomasine McCarthy',   dob: '1884', line: 'curran',  gen: 3, role: 'great-grandparent', relation: "Joanne's paternal great-grandmother (McCarthy line)." },
-  { id: 'ggp_frederick_byron',  name: 'Frederick Byron',      dob: '1895', birthplace: 'United Kingdom', line: 'byron', gen: 3, role: 'great-grandparent', relation: "Joanne's maternal great-grandfather (Byron line)." },
+  { id: 'ggp_frederick_byron',  name: 'Frederick Byron',      dob: 'c. 1895', birthplace: 'St Helens, Lancashire, England', line: 'byron', gen: 3, role: 'great-grandparent', relation: "Joanne's maternal great-grandfather (Byron line)." },
   { id: 'ggp_florence_ritchie', name: 'Florence Ritchie',     line: 'byron',   gen: 3, role: 'great-grandparent', relation: "Joanne's maternal great-grandmother (Ritchie/Byron line)." },
-  { id: 'ggp_george_barrett',   name: 'George Barrett',       dob: '1882', line: 'barrett', gen: 3, role: 'great-grandparent', relation: "Joanne's maternal great-grandfather (Barrett line)." },
+  { id: 'ggp_george_barrett',   name: 'George Barrett',       dob: '2 May 1882', birthplace: 'Cork, Ireland', line: 'barrett', gen: 3, role: 'great-grandparent', relation: "Joanne's maternal great-grandfather (Barrett line)." },
   { id: 'ggp_margaret_scott',   name: 'Margaret Scott',       dob: '1887', line: 'barrett', gen: 3, role: 'great-grandparent', relation: "Joanne's maternal great-grandmother (Scott line)." },
 
   // -- Gen 4: 2× great-grandparents
@@ -1041,6 +1122,7 @@ function cardHTML(p, opts = {}) {
   if (p.dod) cls.push('deceased');
   if (p.id === 'joanne') cls.push('you');
   if (opts.compact) cls.push('compact');
+  if (BIOS[p.id]) cls.push('has-bio');
   const meta = [];
   if (p.dob) meta.push(p.dob);
   if (p.birthplace) meta.push(p.birthplace);
@@ -1120,9 +1202,31 @@ function renderDesktop() {
       </div>
     </div>`;
 
+  // Great-uncle (Matthew Daly) — Michael Daly's elder brother
+  const gUncles = PEOPLE.filter(p => p.role === 'great-uncle' && p.parentOf === 'gp_michael_daly');
+  const michaelPos = POS['gp_michael_daly'];
+  const gUncleBox = {
+    x: michaelPos.x - 200,
+    y: michaelPos.y + 4,
+    w: 180,
+  };
+  let gUnclesHTML = '';
+  if (gUncles.length) {
+    gUnclesHTML = `
+      <div class="siblings line-daly" style="left:${gUncleBox.x}px;top:${gUncleBox.y}px;width:${gUncleBox.w}px">
+        <div class="title">Great-uncle</div>
+        <div class="chips">
+          ${gUncles.map(s => {
+            const bioCls = BIOS[s.id] ? ' has-bio-chip' : '';
+            return `<div class="chip line-daly${bioCls}" data-id="${s.id}">${s.name.replace(' Daly','')}${BIOS[s.id] ? ' <span style="display:inline-block;width:5px;height:5px;background:var(--c-daly);border-radius:50%;margin-left:2px;vertical-align:2px"></span>' : ''}</div>`;
+          }).join('')}
+        </div>
+      </div>`;
+  }
+
   // Inject into canvas (after svg)
   const wrap = document.createElement('div');
-  wrap.innerHTML = cards + sibsHTML + dalyUnclesHTML + byronAuntsHTML;
+  wrap.innerHTML = cards + sibsHTML + dalyUnclesHTML + byronAuntsHTML + gUnclesHTML;
   while (wrap.firstChild) canvas.appendChild(wrap.firstChild);
 
   drawConnectors();
@@ -1355,6 +1459,11 @@ function openPerson(id) {
   }
   fields.push(`<div class="field"><div class="label">Family line</div><div class="val">${line.label}</div></div>`);
   fields.push(`<div class="field relation"><div class="label">Relation to Joanne</div><div class="val">${p.relation || '—'}</div></div>`);
+  // Biography
+  if (BIOS[p.id]) {
+    const paras = BIOS[p.id].map(t => `<p>${t}</p>`).join('');
+    fields.push(`<div class="field bio"><div class="label">Biography</div><div class="val bio-body">${paras}</div></div>`);
+  }
   // Spouse
   const couple = COUPLES.find(c => c.includes(p.id));
   if (couple) {
@@ -1445,11 +1554,17 @@ function renderMobile() {
   sections.push({
     gnum: 'III', gname: 'Grandparents',
     content: () => {
+      const gUncles = PEOPLE.filter(p => p.role === 'great-uncle' && p.parentOf === 'gp_michael_daly');
+      const gUncleHTML = gUncles.length ? `
+        <div class="mlabel" style="margin-top:14px">Paternal great-uncle</div>
+        <div class="mchips">${gUncles.map(s => `<div class="mchip line-daly${BIOS[s.id] ? ' has-bio' : ''}" data-id="${s.id}">${s.name} <span class="sub">${s.dob||''}</span></div>`).join('')}</div>
+      ` : '';
       return `
         <div class="mlabel">Paternal</div>
         <div class="mcouple">${renderMCard('gp_michael_daly')}${renderMCard('gp_mary_curran')}<div class="between">— married —</div></div>
         <div class="mlabel" style="margin-top:14px">Maternal</div>
         <div class="mcouple">${renderMCard('gp_james_byron')}${renderMCard('gp_nora_barrett')}<div class="between">— married —</div></div>
+        ${gUncleHTML}
       `;
     }
   });
@@ -1522,8 +1637,9 @@ function renderMCard(id) {
   if (p.dob) meta.push(`b. ${p.dob}`);
   if (p.dod) meta.push(`d. ${p.dod}`);
   if (p.birthplace) meta.push(p.birthplace);
+  const bioCls = BIOS[p.id] ? ' has-bio' : '';
   return `
-    <div class="mcard line-${p.line}" data-id="${p.id}">
+    <div class="mcard line-${p.line}${bioCls}" data-id="${p.id}">
       <div class="name">${p.name}</div>
       <div class="meta">${meta.join(' · ') || 'no record'}</div>
     </div>`;
