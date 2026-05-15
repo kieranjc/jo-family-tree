@@ -65,7 +65,15 @@ Cloudflare runs `npm install` before your build command (this repo includes `pac
 
 ### SPA routing
 
-[`public/_redirects`](public/_redirects) is copied into `dist/` so all routes fall back to `index.html` (single-page app).
+Deployments using **`npx wrangler deploy`** rely on **`wrangler.jsonc`** —
+**`assets.not_found_handling: "single-page-application"`** serves **`index.html`**
+for non-file URLs.
+
+Avoid **`public/_redirects`** rules such as **`/* /index.html 200`** alongside this setup:
+Workers Static Assets validates **`_redirects`** differently and rejects that rule as an infinite loop (**Cloudflare API code `10021`**).
+
+If you publish **`dist/` on Pages without a Wrangler deploy step**, configure SPA fallback
+your pipeline expects (for example Pages **Redirects** / **`_redirects`** documented for classic Pages-only uploads).
 
 ### Preview deployments
 
