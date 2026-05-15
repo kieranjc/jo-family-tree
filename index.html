@@ -601,6 +601,7 @@
     border: 1px solid var(--rule);
     border-radius: 12px;
     overflow: hidden;
+    scroll-margin-top: 72px;
   }
   .gen-section > button.gen-toggle {
     width: 100%;
@@ -1527,6 +1528,25 @@ function attachCardClicks(root) {
 /* ============================================================
    MOBILE RENDER
    ============================================================ */
+function mobileHeaderOffset() {
+  const topbar = document.querySelector('header.app');
+  return topbar ? topbar.getBoundingClientRect().height + 10 : 72;
+}
+
+function openMobileGenSection(section, { scroll = true } = {}) {
+  const mv = document.getElementById('mobileView');
+  if (!mv || !section) return;
+  mv.querySelectorAll('.gen-section').forEach(sec => {
+    sec.classList.toggle('collapsed', sec !== section);
+  });
+  if (scroll) {
+    requestAnimationFrame(() => {
+      const top = section.getBoundingClientRect().top + window.scrollY - mobileHeaderOffset();
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    });
+  }
+}
+
 function renderMobile() {
   const mv = document.getElementById('mobileView');
   // Build sections per generation
@@ -1625,7 +1645,7 @@ function renderMobile() {
 
   let html = '';
   sections.forEach((s, i) => {
-    const collapsed = i > 2 ? 'collapsed' : '';
+    const collapsed = i === 0 ? '' : 'collapsed';
     html += `
       <div class="gen-section ${collapsed}" data-gen-section="${i}">
         <button class="gen-toggle" type="button">
@@ -1640,10 +1660,15 @@ function renderMobile() {
   });
   mv.innerHTML = html;
 
-  // Toggle
   mv.querySelectorAll('.gen-toggle').forEach(btn => {
     btn.addEventListener('click', () => {
-      btn.closest('.gen-section').classList.toggle('collapsed');
+      const section = btn.closest('.gen-section');
+      const isOpen = !section.classList.contains('collapsed');
+      if (isOpen) {
+        section.classList.add('collapsed');
+      } else {
+        openMobileGenSection(section);
+      }
     });
   });
 }
@@ -1720,11 +1745,13 @@ function runSearch() {
     const target = document.querySelector(`.mcard[data-id="${first.id}"], .mchip[data-id="${first.id}"]`);
     if (target) {
       const section = target.closest('.gen-section');
-      if (section) section.classList.remove('collapsed');
-      setTimeout(() => {
-        const top = target.getBoundingClientRect().top + window.scrollY - 80;
-        window.scrollTo({ top, behavior: 'smooth' });
-      }, 50);
+      if (section) {
+        openMobileGenSection(section);
+        setTimeout(() => {
+          const top = target.getBoundingClientRect().top + window.scrollY - mobileHeaderOffset();
+          window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+        }, 280);
+      }
     }
   }
 }
