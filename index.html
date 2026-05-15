@@ -549,7 +549,8 @@
     vertical-align: 2px;
     opacity: 0.85;
   }
-  .mcard.has-bio .name::after {
+  .mcard.has-bio .name::after,
+  .mchip.has-bio::after {
     content: "";
     display: inline-block;
     width: 5px; height: 5px;
@@ -716,7 +717,10 @@
     .mobile-view { display: block; }
     .panel {
       top: auto; right: 0; left: 0; bottom: 0;
-      width: 100%; height: auto; max-height: 86vh;
+      width: 100%;
+      height: 86vh;
+      max-height: 86vh;
+      overflow: hidden;
       transform: translateY(100%);
       border-left: 0;
       border-top: 1px solid var(--rule);
@@ -724,9 +728,15 @@
       box-shadow: 0 -20px 60px -20px rgba(42,38,32,0.3);
     }
     .panel.show { transform: translateY(0); }
-    .panel header { padding: 14px 18px 12px; }
+    .panel header { padding: 14px 18px 12px; flex-shrink: 0; }
     .panel h2 { font-size: 22px; }
-    .panel .body { padding: 14px 18px 28px; }
+    .panel .body {
+      padding: 14px 18px 28px;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
     .topbar { padding: 11px 14px; gap: 10px; flex-wrap: wrap; }
     .brand h1 { font-size: 17px; }
     .search { order: 3; width: 100%; max-width: none; flex-basis: 100%; }
@@ -1457,13 +1467,20 @@ function openPerson(id) {
   } else {
     fields.push(`<div class="field"><div class="label">Birthplace</div><div class="val muted">Unknown</div></div>`);
   }
+  const bioField = BIOS[p.id]
+    ? (() => {
+        const paras = BIOS[p.id].map(t => `<p>${t}</p>`).join('');
+        return `<div class="field bio"><div class="label">Biography</div><div class="val bio-body">${paras}</div></div>`;
+      })()
+    : '';
+  const isMobile = window.innerWidth <= 800;
+  if (isMobile && bioField) fields.push(bioField);
+
   fields.push(`<div class="field"><div class="label">Family line</div><div class="val">${line.label}</div></div>`);
   fields.push(`<div class="field relation"><div class="label">Relation to Joanne</div><div class="val">${p.relation || '—'}</div></div>`);
-  // Biography
-  if (BIOS[p.id]) {
-    const paras = BIOS[p.id].map(t => `<p>${t}</p>`).join('');
-    fields.push(`<div class="field bio"><div class="label">Biography</div><div class="val bio-body">${paras}</div></div>`);
-  }
+
+  if (!isMobile && bioField) fields.push(bioField);
+
   // Spouse
   const couple = COUPLES.find(c => c.includes(p.id));
   if (couple) {
@@ -1478,6 +1495,7 @@ function openPerson(id) {
   }
 
   body.innerHTML = fields.join('');
+  body.scrollTop = 0;
   body.querySelectorAll('.link').forEach(a => {
     a.addEventListener('click', (e) => { e.preventDefault(); openPerson(a.dataset.id); });
   });
@@ -1607,7 +1625,7 @@ function renderMobile() {
 
   let html = '';
   sections.forEach((s, i) => {
-    const collapsed = i > 1 ? 'collapsed' : '';
+    const collapsed = i > 2 ? 'collapsed' : '';
     html += `
       <div class="gen-section ${collapsed}" data-gen-section="${i}">
         <button class="gen-toggle" type="button">
