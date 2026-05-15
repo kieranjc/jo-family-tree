@@ -25,7 +25,9 @@ export function getDefaultGenLabels() {
 export function getPersonaGenLabels(viewerGen) {
   const labels = [];
   for (let g = 0; g < 5; g++) {
-    const diff = viewerGen - g;
+    // Higher `g` = older generation (gen 4 top → gen 0 bottom).
+    // diff > 0 means this row is ancestral to the viewer; diff < 0 means descendant.
+    const diff = g - viewerGen;
     const rel = RELATIVE[diff];
     if (rel) {
       labels.push({ ...rel });

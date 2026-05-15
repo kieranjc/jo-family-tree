@@ -411,7 +411,10 @@
     margin-left: 2px;
   }
 
-  .card.you {
+  .card.you,
+  .chip.you,
+  .mcard.you,
+  .mchip.you {
     background: linear-gradient(145deg, #fffbeb 0%, #ffffff 55%);
     border-color: rgba(180, 83, 9, 0.25);
     box-shadow: 0 0 0 1px rgba(180, 83, 9, 0.12), var(--shadow-lift);

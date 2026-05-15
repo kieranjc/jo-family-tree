@@ -10,6 +10,13 @@ import {
   personaDisplayName,
 } from './lib/persona.js';
 import { getGenLabelsForMode } from './lib/genLabels.js';
+import {
+  getGen0ViewMode,
+  getGen0SiblingChipPeople,
+  getGen0SiblingClusterTitle,
+  getGen0MobileFamilyLabel,
+  showGen0PersonaLead,
+} from './lib/gen0View.js';
 
 let activePersona = resolveInitialPersona();
 
@@ -102,6 +109,20 @@ function lifespan(p) {
   return '';
 }
 
+function chipHTML(p) {
+  const you = activePersona && p.id === activePersona ? ' you' : '';
+  const bio = BIOS[p.id] ? ' has-bio-chip' : '';
+  const line = p.line === 'joanne' ? 'daly' : p.line;
+  return `<div class="chip line-${line}${you}${bio}" data-id="${p.id}">${p.name.split(' ')[0]}${p.dob ? ` <span class="chip-sub">${p.dob}</span>` : ''}</div>`;
+}
+
+function mchipHTML(p) {
+  const you = activePersona && p.id === activePersona ? ' you' : '';
+  const bio = BIOS[p.id] ? ' has-bio' : '';
+  const line = p.line === 'joanne' ? 'daly' : p.line;
+  return `<div class="mchip line-${line}${you}${bio}" data-id="${p.id}">${p.name} <span class="sub">${p.dob || ''}</span></div>`;
+}
+
 function cardHTML(p, opts = {}) {
   const cls = ['card', `line-${p.line}`];
   if (p.dod) cls.push('deceased');
@@ -140,21 +161,22 @@ function renderDesktop() {
     if (POS[p.id]) cards += cardHTML(p);
   });
 
-  // Siblings cluster (Joanne's brothers) — to the right of Kieran
-  const sibs = PEOPLE.filter(p => p.role === 'sibling');
+  const gen0Mode = getGen0ViewMode(activePersona, getViewer());
+  const sibChips = getGen0SiblingChipPeople(gen0Mode, activePersona, { includePersonaLead: true });
   const kieranPos = POS['kieran'];
   const sibsBox = {
     x: kieranPos.x + LAYOUT.cardW + 30,
     y: kieranPos.y - 8,
-    w: 230,
+    w: Math.max(230, sibChips.length * 52),
   };
   let sibsHTML = `
     <div class="siblings line-daly" data-cluster="siblings" style="left:${sibsBox.x}px;top:${sibsBox.y}px;width:${sibsBox.w}px">
-      <div class="title">Joanne's brothers</div>
+      <div class="title">${getGen0SiblingClusterTitle(gen0Mode)}</div>
       <div class="chips">
-        ${sibs.map(s => `<div class="chip line-daly" data-id="${s.id}">${s.name.split(' ')[0]}${s.dob ? ` <span class="chip-sub">${s.dob}</span>` : ''}</div>`).join('')}
+        ${sibChips.map((s) => chipHTML(s)).join('')}
       </div>
     </div>`;
+
 
   // Uncles cluster (paternal — Daly) above/beside John Daly
   const dalyUncles = PEOPLE.filter(p => (p.role === 'uncle' || p.role === 'aunt') && p.parentOf === 'john_daly');
@@ -531,17 +553,23 @@ function renderMobile() {
   sections.push({
     ...mobileGenMeta(0),
     content: () => {
+      const gen0Mode = getGen0ViewMode(activePersona, getViewer());
+      const chipPeople = getGen0SiblingChipPeople(gen0Mode, activePersona);
       let html = '';
-      // Joanne + Kieran couple card pair
-      html += `<div class="mlabel">Joanne &amp; family</div>`;
+      if (showGen0PersonaLead(gen0Mode) && activePersona) {
+        html += `<div class="mlabel">You</div>`;
+        html += renderMCard(activePersona);
+      }
+      html += `<div class="mlabel${showGen0PersonaLead(gen0Mode) ? ' style="margin-top:14px"' : ''}">${getGen0MobileFamilyLabel(gen0Mode)}</div>`;
       html += `<div class="mcouple">
         ${renderMCard('joanne')}
         ${renderMCard('kieran')}
         <div class="between">— married —</div>
       </div>`;
-      html += `<div class="mlabel" style="margin-top:14px">Joanne's brothers</div>`;
-      const sibs = PEOPLE.filter(p => p.role === 'sibling');
-      html += `<div class="mchips">${sibs.map(s => `<div class="mchip line-daly" data-id="${s.id}">${s.name} <span class="sub">${s.dob||''}</span></div>`).join('')}</div>`;
+      if (chipPeople.length) {
+        html += `<div class="mlabel" style="margin-top:14px">${getGen0SiblingClusterTitle(gen0Mode)}</div>`;
+        html += `<div class="mchips">${chipPeople.map((s) => mchipHTML(s)).join('')}</div>`;
+      }
       return html;
     }
   });
@@ -656,8 +684,9 @@ function renderMCard(id) {
   if (p.dod) meta.push(`d. ${p.dod}`);
   if (p.birthplace) meta.push(p.birthplace);
   const bioCls = BIOS[p.id] ? ' has-bio' : '';
+  const youCls = activePersona && id === activePersona ? ' you' : '';
   return `
-    <div class="mcard line-${p.line}${bioCls}" data-id="${p.id}">
+    <div class="mcard line-${p.line}${bioCls}${youCls}" data-id="${p.id}">
       <div class="name">${p.name}</div>
       <div class="meta">${meta.join(' · ') || 'no record'}</div>
     </div>`;
