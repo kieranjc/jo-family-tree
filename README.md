@@ -56,6 +56,8 @@ This repo includes **`wrangler.jsonc`** so **`npx wrangler deploy`** runs **non-
 |---------------|--------|
 | `NODE_VERSION` | `20` |
 
+Wrangler **4.92+** requires **Node 22+**. This repo pins **`wrangler@4.86.0`** so **`npx wrangler deploy`** keeps working on Pages with **`NODE_VERSION=20`**. To use the newest Wrangler instead, set **`NODE_VERSION`** to **`22`** (or newer) and bump the **`wrangler`** devDependency past **4.86**.
+
 Cloudflare runs `npm install` before your build command (this repo includes `package-lock.json` for reproducible installs).
 
 4. Save and deploy. The first build produces a `*.pages.dev` URL.
