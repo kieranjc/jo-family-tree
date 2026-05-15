@@ -697,19 +697,29 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 28px; height: 28px;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
     background: var(--bg);
+    border: 1px solid var(--rule);
     border-radius: 50%;
-    transition: transform 0.25s, background 0.2s;
     color: var(--ink-soft);
-    font-size: 12px;
+    transition: transform 0.25s ease, background 0.2s, border-color 0.2s, color 0.2s;
+  }
+  .gen-toggle .caret svg {
+    width: 18px;
+    height: 18px;
+    display: block;
   }
   .gen-section:not(.collapsed) .caret {
     background: var(--ink);
+    border-color: var(--ink);
     color: #fff;
     transform: rotate(0deg);
   }
-  .gen-section.collapsed .caret { transform: rotate(-90deg); }
+  .gen-section.collapsed .caret {
+    transform: rotate(-90deg);
+  }
   .gen-section.collapsed .gen-body { display: none; }
   .gen-body {
     padding: 14px 16px 18px;
@@ -1724,7 +1734,7 @@ function renderMobile() {
             <span class="gnum">Generation ${s.gnum}</span>
             <span class="gname">${s.gname}</span>
           </span>
-          <span class="caret">▾</span>
+          <span class="caret" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>
         </button>
         <div class="gen-body">${s.content()}</div>
       </div>`;
