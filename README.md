@@ -44,6 +44,9 @@ npm test
 | **Root directory** | `/` (repo root) |
 | **Build command** | `npm run build` |
 | **Build output directory** | `dist` |
+| **Deploy command** | `npx wrangler deploy` |
+
+If your Cloudflare project only asks for a build command and output directory (Git-connected Pages), you can leave **Deploy command** empty—Cloudflare publishes `dist/` automatically after a successful build. Use **`npx wrangler deploy`** when the dashboard requires an explicit Wrangler upload step after the build finishes (ensure Wrangler is authenticated, e.g. `npx wrangler login`, or use a suitable CI token).
 
 **Environment variables** (Pages → your project → **Settings** → **Environment variables** → **Production** and **Preview**):
 
@@ -67,6 +70,14 @@ Every branch and pull request gets its own preview URL automatically once Git in
 ### Deploy from your machine (CLI, optional)
 
 Requires [Wrangler](https://developers.cloudflare.com/workers/wrangler/) logged in (`npx wrangler login`).
+
+```bash
+npm ci
+npm run build
+npx wrangler deploy
+```
+
+**Classic Pages direct upload** (explicit folder + project slug):
 
 ```bash
 npm ci
