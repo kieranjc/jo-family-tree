@@ -32,8 +32,9 @@
     </div>
     <div class="search">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-      <input id="searchInput" type="text" placeholder="Search by name…" autocomplete="off" spellcheck="false">
+      <input id="searchInput" type="text" placeholder="Search by name…" autocomplete="off" spellcheck="false" aria-expanded="false" aria-controls="searchResults" aria-autocomplete="list">
       <span class="count" id="searchCount"></span>
+      <ul id="searchResults" class="search-results" role="listbox" hidden></ul>
     </div>
     <div class="controls">
       <button class="ctrl" id="zoomOut" title="Zoom out">

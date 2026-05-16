@@ -102,7 +102,7 @@ Create the Pages project in the dashboard first (empty project), or pass a new n
 ## Personas
 
 - **Default:** neutral "Daly" tree with relations from Joanne's perspective.
-- **Optional:** pick a persona (parents, aunts/uncles, Joanne's brothers, Joanne, or Kieran). Choice is stored in `localStorage` and a cookie; share via `?persona=john_daly`.
+- **Optional:** pick a persona (Joanne's parents, her brothers, Joanne, or Kieran). Choice is stored in `localStorage` and a cookie; share via `?persona=john_daly`.
 
 ## Files
 
