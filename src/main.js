@@ -17,6 +17,7 @@ import {
   getGen0MobileFamilyLabel,
   showGen0PersonaLead,
 } from './lib/gen0View.js';
+import { searchResultMeta } from './lib/search.js';
 
 let activePersona = resolveInitialPersona();
 
@@ -713,7 +714,128 @@ function renderMCard(id) {
    ============================================================ */
 const searchInput = document.getElementById('searchInput');
 const searchCount = document.getElementById('searchCount');
+const searchResults = document.getElementById('searchResults');
 const searchToggle = document.getElementById('searchToggle');
+
+function escapeHtml(text) {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function clearSearchHighlights() {
+  document.querySelectorAll(
+    '.card.match, .card.dimmed, .mcard.match, .chip.match, .chip.dimmed, .mchip.match'
+  ).forEach((el) => {
+    el.classList.remove('match', 'dimmed');
+  });
+}
+
+function applySearchHighlights(matches) {
+  const matchIds = new Set(matches.map((m) => m.id));
+  document.querySelectorAll('.card').forEach((el) => {
+    const id = el.dataset.id;
+    if (matchIds.has(id)) el.classList.add('match');
+    else el.classList.add('dimmed');
+  });
+  document.querySelectorAll('.chip').forEach((el) => {
+    const id = el.dataset.id;
+    if (!id) return;
+    if (matchIds.has(id)) el.classList.add('match');
+    else el.classList.add('dimmed');
+  });
+  document.querySelectorAll('.mcard, .mchip').forEach((el) => {
+    const id = el.dataset.id;
+    if (id && matchIds.has(id)) el.classList.add('match');
+  });
+}
+
+function hideSearchResults() {
+  if (!searchResults) return;
+  searchResults.hidden = true;
+  searchResults.innerHTML = '';
+  searchInput?.setAttribute('aria-expanded', 'false');
+}
+
+function renderSearchResults(matches, activeId = null) {
+  if (!searchResults) return;
+  searchResults.innerHTML = '';
+  if (!searchInput.value.trim()) {
+    hideSearchResults();
+    return;
+  }
+  searchInput.setAttribute('aria-expanded', 'true');
+  searchResults.hidden = false;
+
+  if (matches.length === 0) {
+    const empty = document.createElement('li');
+    empty.className = 'search-result-empty';
+    empty.textContent = 'No matches';
+    searchResults.appendChild(empty);
+    return;
+  }
+
+  for (const p of matches) {
+    const li = document.createElement('li');
+    li.className = `search-result line-${p.line}${p.id === activeId ? ' active' : ''}`;
+    li.setAttribute('role', 'option');
+    li.dataset.id = p.id;
+    li.innerHTML = `<span class="search-result-name">${escapeHtml(p.name)}</span><span class="search-result-meta">${escapeHtml(searchResultMeta(p))}</span>`;
+    li.addEventListener('click', (e) => {
+      e.preventDefault();
+      focusSearchMatch(p.id);
+    });
+    searchResults.appendChild(li);
+  }
+}
+
+function focusSearchMatch(id) {
+  const q = searchInput.value.trim().toLowerCase();
+  const matches = q ? PEOPLE.filter((p) => p.name.toLowerCase().includes(q)) : [];
+  clearSearchHighlights();
+  if (matches.length) applySearchHighlights(matches);
+  renderSearchResults(matches, id);
+
+  if (window.innerWidth > 800) {
+    const pos = POS[id];
+    if (pos) {
+      const sw = stage.clientWidth;
+      const sh = stage.clientHeight;
+      view.x = sw / 2 - (pos.x + LAYOUT.cardW / 2) * view.scale;
+      view.y = sh / 2 - (pos.y + LAYOUT.cardH / 2) * view.scale;
+      applyView();
+      return;
+    }
+    const chip = document.querySelector(`.chip[data-id="${id}"]`);
+    if (chip) {
+      const chipRect = chip.getBoundingClientRect();
+      const stageRect = stage.getBoundingClientRect();
+      const px =
+        (chipRect.left + chipRect.width / 2 - stageRect.left - view.x) / view.scale;
+      const py =
+        (chipRect.top + chipRect.height / 2 - stageRect.top - view.y) / view.scale;
+      const sw = stage.clientWidth;
+      const sh = stage.clientHeight;
+      view.x = sw / 2 - px * view.scale;
+      view.y = sh / 2 - py * view.scale;
+      applyView();
+    }
+    return;
+  }
+
+  const target = document.querySelector(`.mcard[data-id="${id}"], .mchip[data-id="${id}"]`);
+  if (!target) return;
+  const section = target.closest('.gen-section');
+  if (section) {
+    openMobileGenSection(section);
+    setTimeout(() => {
+      const top = target.getBoundingClientRect().top + window.scrollY - mobileHeaderOffset();
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    }, 280);
+  }
+}
 const personaToggle = document.getElementById('personaToggle');
 const personaSelect = document.getElementById('personaSelect');
 const topbarEl = document.querySelector('.topbar');
@@ -775,61 +897,38 @@ searchInput.addEventListener('input', () => {
 });
 function runSearch() {
   const q = searchInput.value.trim().toLowerCase();
-  // Clear current highlights
-  document.querySelectorAll('.card.match, .card.dimmed, .mcard.match').forEach(el => {
-    el.classList.remove('match', 'dimmed');
-  });
+  clearSearchHighlights();
   searchCount.textContent = '';
-  if (!q) return;
-  const matches = PEOPLE.filter(p => p.name.toLowerCase().includes(q));
+  if (!q) {
+    hideSearchResults();
+    return;
+  }
+
+  const matches = PEOPLE.filter((p) => p.name.toLowerCase().includes(q));
   searchCount.textContent = `${matches.length} match${matches.length === 1 ? '' : 'es'}`;
+  renderSearchResults(matches);
+  if (matches.length) applySearchHighlights(matches);
+}
 
-  if (matches.length === 0) return;
-
-  // Desktop highlight + dim others
-  document.querySelectorAll('.card').forEach(el => {
-    const id = el.dataset.id;
-    if (matches.find(m => m.id === id)) {
-      el.classList.add('match');
-    } else {
-      el.classList.add('dimmed');
-    }
-  });
-  // Mobile
-  document.querySelectorAll('.mcard, .mchip').forEach(el => {
-    const id = el.dataset.id;
-    if (id && matches.find(m => m.id === id)) {
-      el.classList.add('match');
-    }
-  });
-
-  // Scroll to first match
-  if (matches.length > 0 && window.innerWidth > 800) {
-    const first = matches[0];
-    let pos = POS[first.id];
-    if (pos) {
-      const sw = stage.clientWidth, sh = stage.clientHeight;
-      // Center the card with current scale
-      view.x = sw/2 - (pos.x + LAYOUT.cardW/2) * view.scale;
-      view.y = sh/2 - (pos.y + LAYOUT.cardH/2) * view.scale;
-      applyView();
-    }
-  } else if (matches.length > 0 && window.innerWidth <= 800) {
-    // Expand the section containing the first match and scroll to it
-    const first = matches[0];
-    const target = document.querySelector(`.mcard[data-id="${first.id}"], .mchip[data-id="${first.id}"]`);
-    if (target) {
-      const section = target.closest('.gen-section');
-      if (section) {
-        openMobileGenSection(section);
-        setTimeout(() => {
-          const top = target.getBoundingClientRect().top + window.scrollY - mobileHeaderOffset();
-          window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
-        }, 280);
-      }
+searchInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    searchInput.value = '';
+    runSearch();
+    searchInput.blur();
+    return;
+  }
+  if (e.key === 'Enter' && searchResults && !searchResults.hidden) {
+    const first = searchResults.querySelector('.search-result[data-id]');
+    if (first) {
+      e.preventDefault();
+      focusSearchMatch(first.dataset.id);
     }
   }
-}
+});
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.search')) hideSearchResults();
+});
 
 /* ============================================================
    INIT

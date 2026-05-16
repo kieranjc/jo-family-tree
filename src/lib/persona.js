@@ -6,7 +6,7 @@ export const COOKIE_NAME = 'daly-tree-persona';
 
 export const PERSONA_IDS = PEOPLE.filter(
   (p) =>
-    p.gen === 1 ||
+    p.role === 'parent' ||
     p.role === 'sibling' ||
     p.role === 'self' ||
     p.role === 'spouse'
@@ -94,8 +94,8 @@ export function getPersonaGroups() {
       })),
     },
     {
-      label: 'Parents & aunts/uncles',
-      options: PEOPLE.filter((p) => p.gen === 1)
+      label: "Joanne's parents",
+      options: PEOPLE.filter((p) => p.role === 'parent')
         .sort((a, b) => a.name.localeCompare(b.name))
         .map((p) => ({ id: p.id, name: p.name })),
     },
