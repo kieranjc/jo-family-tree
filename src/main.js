@@ -499,11 +499,13 @@ function openPerson(id) {
   });
   scrim.classList.add('show');
   panel.setAttribute('aria-hidden', 'false');
+  if (window.innerWidth <= 800) document.body.classList.add('panel-open');
 }
 function closePanel() {
   panel.classList.remove('show');
   scrim.classList.remove('show');
   panel.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('panel-open');
   document.querySelectorAll('.card.focused').forEach(el => el.classList.remove('focused'));
 }
 document.getElementById('panelClose').addEventListener('click', closePanel);

@@ -690,21 +690,22 @@
     padding: 12px 16px 88px;
     z-index: 2;
     position: relative;
-    max-width: 520px;
-    margin: 0 auto;
+    width: 100%;
+    max-width: none;
+    margin: 0;
   }
   .gen-section {
-    margin-bottom: 12px;
+    width: 100%;
+    margin-bottom: 16px;
     background: var(--card);
     border: 1px solid var(--rule);
     border-radius: var(--radius-lg);
     overflow: hidden;
     scroll-margin-top: 72px;
     box-shadow: var(--shadow);
-    transition: box-shadow 0.25s, border-color 0.25s;
+    transition: background 0.25s, box-shadow 0.25s;
   }
   .gen-section:not(.collapsed) {
-    border-color: #cbd5e1;
     box-shadow: var(--shadow-lift);
   }
   .gen-section > button.gen-toggle {
@@ -712,7 +713,7 @@
     background: var(--card);
     border: 0;
     border-bottom: 1px solid transparent;
-    padding: 16px 18px;
+    padding: 18px;
     text-align: left;
     cursor: pointer;
     font: inherit;
@@ -778,9 +779,10 @@
   }
   .gen-section.collapsed .gen-body { display: none; }
   .gen-body {
-    padding: 14px 16px 18px;
+    padding: 0 18px 20px;
     display: grid;
-    gap: 12px;
+    gap: 14px;
+    overflow-x: hidden;
   }
   .mcard {
     position: relative;
@@ -854,31 +856,82 @@
   @media (max-width: 800px) {
     .stage, .legend, .pan-hint { display: none !important; }
     .mobile-view { display: block; }
+
+    body.panel-open { overflow: hidden; }
+
+    .gen-toggle .gtitle .gnum { font-size: 11px; }
+    .gen-toggle .gtitle .gname { font-size: 1.2rem; }
+    .gen-toggle .gcount { font-size: 12px; }
+    .mcard .name { font-size: 17px; }
+    .mcard .meta { font-size: 13px; }
+    .mchip { font-size: 15px; }
+    .mlabel { font-size: 11px; }
+    .gen-section,
+    .gen-body,
+    .mcard,
+    .mcouple {
+      min-width: 0;
+    }
+    .mcouple {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .mcouple .between { margin-top: 0; margin-bottom: 0; }
+
     .panel {
-      top: auto; right: 0; left: 0; bottom: 0;
+      top: 0; right: 0; left: 0; bottom: 0;
       width: 100%;
-      height: 86vh;
-      max-height: 86vh;
+      height: 100vh;
+      height: 100dvh;
+      max-height: 100dvh;
       overflow: hidden;
       transform: translateY(100%);
       border-left: 0;
-      border-top: 1px solid var(--rule);
-      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-      box-shadow: 0 -24px 48px -12px rgba(15, 23, 42, 0.25);
+      border-top: 0;
+      border-radius: 0;
+      box-shadow: none;
     }
     .panel.show { transform: translateY(0); }
-    .panel header { padding: 16px 18px 14px; flex-shrink: 0; }
-    .panel h2 { font-size: 1.35rem; }
+    .panel header {
+      padding: max(16px, env(safe-area-inset-top)) 18px 14px;
+      flex-shrink: 0;
+    }
+    .panel h2 { font-size: 1.55rem; }
+    .panel .close {
+      width: 44px;
+      height: 44px;
+      font-size: 22px;
+    }
     .panel .body {
-      padding: 16px 18px 32px;
+      padding: 18px 20px max(28px, env(safe-area-inset-bottom));
       min-height: 0;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       overscroll-behavior: contain;
     }
+    .panel .field .label { font-size: 11px; }
+    .panel .field .val { font-size: 16px; line-height: 1.5; }
+    .panel .field.relation .val {
+      font-size: 16px;
+      padding: 14px 16px;
+      line-height: 1.55;
+    }
+    .panel .field.bio .val.bio-body {
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--ink);
+    }
+    .panel .field.bio .val.bio-body p { margin-bottom: 18px; }
+
     .topbar { padding: 10px 16px; gap: 10px; flex-wrap: wrap; }
     .brand h1 { font-size: 1.15rem; }
     .controls { display: none; }
+  }
+  @media (min-width: 521px) and (max-width: 800px) {
+    .mobile-view {
+      max-width: 520px;
+      margin: 0 auto;
+    }
   }
   @media (min-width: 801px) {
     .mobile-view { display: none !important; }
